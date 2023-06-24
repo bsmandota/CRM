@@ -1,0 +1,9 @@
+.clickable{
+    cursor: pointer;
+}
+.login-home{
+	background-image:url("./components/login-bg.jpg");
+	background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}

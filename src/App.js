@@ -10,6 +10,7 @@ import '@coreui/coreui/dist/css/coreui.min.css';
 import '@coreui/coreui/dist/js/coreui.min.js';
 import 'react-circular-progressbar/dist/styles.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { Suspense } from "react";
 
 const ROLES = {
   "CUSTOMER": "CUSTOMER",
@@ -20,11 +21,12 @@ const ROLES = {
 function App() {
   return (
     <Router>
+      <Suspense fallback={<div>loading...</div>}>
       <Routes>
         <Route path="/" element={<Signin />}></Route>
-        <Route element={<RequireAuth allowedRoles={[ROLES.ADMIN]} />}>
-          <Route path="/admin" element={<Admin />} />
-        </Route>
+            <Route element={<RequireAuth allowedRoles={[ROLES.ADMIN]} />}>
+            <Route path="/admin" element={<Admin />} />
+          </Route>
         <Route element={<RequireAuth allowedRoles={[ROLES.ENGINEER]} />}>
           <Route path="/engineer" element={<Engineer />} />
         </Route>
@@ -34,6 +36,7 @@ function App() {
         <Route path="/*" element={<Unauth />} />
         <Route path="/unauthorised" element={<Unauth />} />
       </Routes>
+        </Suspense>
     </Router>
   );
 }

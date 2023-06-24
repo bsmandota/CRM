@@ -10,7 +10,7 @@ const BASE_URL = "https://crm-be-4scm.onrender.com";
  */
 
 export async function userSignup(data) {
-  return await axios.post(`${BASE_URL}/crm/v1/auth/signup`, data);
+  return await axios.post(`${BASE_URL}/crm/api/v1/auth/signup`, data);
 }
 /**
  * SignIN:
