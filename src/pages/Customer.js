@@ -6,7 +6,6 @@ import MaterialTable from "@material-table/core";
 import { Modal,Button } from "react-bootstrap";
 import { useState, } from "react";
 import {ticketCreation} from '../api/tickets';
-
 const columns = [
   { title: "ID", field: "id" },
   { title: "TITLE", field: "title" },
@@ -23,20 +22,19 @@ const columns = [
     },
   },
 ];
+function Customer() {
+const [createTicketModal, setCreateTicketModal]= useState(false);
+const closeCreateTicketModal = ()=>{setCreateTicketModal(false);}
+
 const createTicket = (e)=>{
   e.preventDefault();
   const data ={
     title: e.target.title.value,
     description: e.target.description.value
-  } 
+  }
   ticketCreation(data)
   .then(response=>{console.log(response)}).catch(error=>console.log(error))
 } 
-function Customer() {
-  const [createTicketModal, setCreateTicketModal]= useState(false);
-  const closeCreateTicketModal = ()=>{
-    setCreateTicketModal(false);
-  }
   return (
     <div className="bg-success vh-100%">
       <Sidebar />
@@ -98,7 +96,7 @@ function Customer() {
               ],
             }}
           />
-        <div className="text-white text-center m-2">Facing any issue? raise a ticket!</div>
+        <div className="text-white text-center m-2"><code>Facing any issue?</code> raise a ticket!</div>
         <button onClick={()=>setCreateTicketModal(true)} className="btn btn-lg btn-primary h5 w-100 text-center">Raise a ticket</button>
           </div>
           

@@ -4,7 +4,7 @@ import { Modal, Button } from "react-bootstrap";
 import ExportCsv from "@material-table/exporters/csv";
 import ExportPdf from "@material-table/exporters/pdf";
 import fetchTicket, { ticketUpdation } from "../api/tickets";
-import fetchUser from '../api/users'
+import fetchUser,{userUpdation} from '../api/users';
 import { useEffect, useState } from "react";
 import Widget from "../components/widget";
 const columns = [
@@ -37,43 +37,34 @@ const userColumns = [
     },
   },
 ];
-function Admin() {
+export default function Admin() {
   const [ticketDetails, setTicketDetails] = useState([]);
   const [ticketStatusCount, setTicketStatusCount] = useState({});
   const [ticketUpdationModal, setTicketUpdationModal] = useState(false);
   const [selectedCurrTicket, setSelectedCurrTicket] = useState({});
   const [userDetails, setUserDetails] = useState([]);
+  const [selectedCurrUser, setSelectedCurrUser]= useState({})
+  const [userUpdationModal, setUserUpdationModal] = useState(false);
 
   const updateSelectedCurrTicket = (data) => setSelectedCurrTicket(data);
-  const openTicketUpdationModal = () => setTicketUpdationModal(true);
   const closeTicketUpdationModal = () => setTicketUpdationModal(false);
-
-
-  const fetchTickets = () => {
-    fetchTicket()
-      .then((response) => {
-        setTicketDetails(response.data);
-        updateTicketCount(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
-  const fetchUsers = () => {
-      fetchUser()
-      .then((response) => {
-        console.log(response.data)
-        setUserDetails(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
+  const updateSelectedCurrUser = (data) => setSelectedCurrUser(data);
+  const closeUserUpdationModal = () => setUserUpdationModal(false);
 
   useEffect(() => {
     fetchTickets();
-    fetchUsers();
+    fetchUsers("");
   }, []);
+  const fetchTickets = () => {
+      fetchTicket()
+        .then((response) => {
+          setTicketDetails(response.data);
+          updateTicketCount(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    };
   const updateTicketCount = (tickets) => {
     //filling this empty object with the ticket counts
     //Segrating the tickets in 4 properties according to the status of the tickets
@@ -100,7 +91,6 @@ function Admin() {
     setTicketStatusCount(Object.assign({}, data));
     return data;
   };
-
   // 2. -> Storing the curr ticket details in a state
   const editTicket = (ticketDetail) => {
     const ticket = {
@@ -116,6 +106,38 @@ function Admin() {
     setSelectedCurrTicket(ticket);
   };
 
+  const fetchUsers = () => {
+      fetchUser("")
+      .then((response) => {
+        // console.log(response.data)
+        setUserDetails(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  const editUser=(userDetail)=>{
+    console.log(userDetail);
+    const user={
+      userId: userDetail.userId,
+      name: userDetail.name,
+      email: userDetail.email,
+      userStatus: userDetail.userStatus,
+      userTypes: userDetail.userTypes
+    }
+    setUserUpdationModal(true);
+    setSelectedCurrUser(user);
+  }
+  
+
+  const onUserUpdate = (e) => {
+    console.log(selectedCurrUser);
+    if (e.target.name === "userStatus")
+      selectedCurrUser.userStatus = e.target.value;
+    if (e.target.name === "userTypes")
+      selectedCurrUser.userTypes = e.target.value;
+      updateSelectedCurrUser(Object.assign({}, selectedCurrUser));
+    }
   const onTicketUpdate = (e) => {
     if (e.target.name === "ticketPriority")
       selectedCurrTicket.ticketPriority = e.target.value;
@@ -125,24 +147,122 @@ function Admin() {
      selectedCurrTicket.status = e.target.value;
     if (e.target.name === "description")
       selectedCurrTicket.description = e.target.value;
-
     updateSelectedCurrTicket(Object.assign({}, selectedCurrTicket));
   };
   // 4. Call the api with the new updated Data
   const updateTicket = (e) => {
     e.preventDefault();
     ticketUpdation(selectedCurrTicket.id, selectedCurrTicket)
+      // .then((response)=>{
+      //   console.log("succeed",response)
       .then(setTicketUpdationModal(false), fetchTickets())
+      // })
       .catch(function (error) {
         console.log(error);
       });
   };
-
+  const updateUser = (e) => {
+    e.preventDefault();
+    userUpdation(selectedCurrUser.userId, selectedCurrUser)
+      // .then((response)=>{
+      //   console.log("succeed",response)
+      .then(setUserUpdationModal(false), fetchUser())
+      // })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  
   return (
     <div className=" bg-opacity-0 vh-100%">
       {/**SideBar */}
       <Sidebar />
-
+      
+{userUpdationModal && (
+      <Modal
+          show ={userUpdationModal}
+          backdrop="static"
+          onHide={closeUserUpdationModal}
+          
+          centered >
+            <Modal.Header closeButton>
+              <Modal.Title>Update User Details</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+            <form
+                /*submit the details and we  will call the API */
+                onSubmit={updateUser}
+              >
+                <div className="p-1">
+                  <h5 className="card-subtitle mb-2 text-danger">
+                    User ID: {selectedCurrUser.userId}
+                  </h5>
+                </div>
+                <div className="input-group mb-2">
+                  <label className="label input-group-text label-md">
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    disabled
+                    value={selectedCurrUser.name}
+                    className="form-control"
+                  />
+                </div>
+                <div className="input-group mb-2">
+                  <label className="label input-group-text label-md">
+                    Email
+                  </label>
+                  <input
+                    type="text"
+                    disabled
+                    value={selectedCurrUser.email}
+                    className="form-control"
+                  />
+                </div>
+                {/* 3. -> grabbing the new updated values from inputs using onChange */}
+                <div className="input-group mb-2">
+                  <label className="label input-group-text label-md">
+                    User Type
+                  </label>
+                  <input
+                    type="text"
+                    value={selectedCurrUser.userTypes}
+                    name="userTypes"
+                    className="form-control"
+                    onChange={onUserUpdate}
+                  />
+                </div>
+                <div className="input-group mb-2">
+                  <label className="label input-group-text label-md">
+                    User Status
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="userStatus"
+                    value={selectedCurrUser.userStatus}
+                    onChange={onUserUpdate}
+                  >
+                  </input>
+                </div>
+                
+                <div className="d-flex justify-content-end">
+                  <Button
+                    variant="secondary"
+                    className="m-1"
+                    onClick={closeUserUpdationModal}
+                  >
+                    Cancel
+                  </Button>
+                  <Button variant="danger" className="m-1" type="submit">
+                    Update
+                  </Button>
+                </div>
+              </form>
+            </Modal.Body>
+          </Modal>
+)}
       {/* Title-> Tether-X */}
       <div className=" d-inline-block fw-bold px-3 py-1 mx-5 my-1 rounded bg-secondary h5">
         TETHER-X
@@ -166,7 +286,7 @@ function Admin() {
         <Widget color="success" title=" Closed" icon="check2-square" ticketCount={ticketStatusCount.closed} totalCount={ticketStatusCount.total} />
         <Widget color="dark" title=" Blocked" icon="slash-circle" ticketCount={ticketStatusCount.blocked} totalCount={ticketStatusCount.total} />
         </div>
-        {/* Modal */}
+        {/* Modal - Tickets */}
         {ticketUpdationModal && (
           <Modal
             show={ticketUpdationModal}
@@ -319,7 +439,7 @@ function Admin() {
           <MaterialTable
             title="USERS"
             // 1. -> Grabbing the specific ticket from the row
-            // onRowClick={(event, rowData) => editUser(rowData)}
+            onRowClick={(event, rowData) => editUser(rowData)}
             columns={userColumns}
             data={userDetails}
             options={{
@@ -328,11 +448,11 @@ function Admin() {
                 backgroundColor: "#aaa",
                 color: "#fff",
               },
-              rowStyle: (userDetails, index) => {
-                if (index % 2 === 0) {
-                  return { backgroundColor: "#ddd" };
-                }
-              },
+              // rowStyle: (userDetails, index) => {
+              //   if (index % 2 === 0) {
+              //     return { backgroundColor: "#ddd" };
+              //   }
+              // },
               exportMenu: [
                 {
                   label: "Export Pdf",
@@ -353,6 +473,5 @@ function Admin() {
       </div>
     </div>
   );
-}
 
-export default Admin;
+}

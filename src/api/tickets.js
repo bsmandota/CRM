@@ -3,7 +3,7 @@ const BASE_URL = "https://crm-be-4scm.onrender.com"
 // GET API ->
 
 export default async function fetchTicket(){
-    return await axios.get(`${BASE_URL}/crm/api/v1/tickets`,{
+    return await axios.get(`${BASE_URL}/crm/api/v1/tickets/`,{
         headers: {
             'x-access-token':localStorage.getItem("token")
         }
@@ -13,8 +13,8 @@ export default async function fetchTicket(){
 }
 // POST API ->
 // asking for data in params - title, description
-export async function ticketCreation(){
-    return await axios.post(`${BASE_URL}/crm/api/v1/tickets/`,{
+export async function ticketCreation(data){
+    return await axios.post(`${BASE_URL}/crm/api/v1/tickets/`,data,{
         headers:{
             'x-access-token':localStorage.getItem("token")
         }
