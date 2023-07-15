@@ -1,14 +1,13 @@
 import MaterialTable from "@material-table/core";
 import Sidebar from "../components/Sidebar";
 import { Modal, Button } from "react-bootstrap";
-import ExportCsv from "@material-table/exporters/csv";
-import ExportPdf from "@material-table/exporters/pdf";
-import fetchTicket, { ticketUpdation } from "../api/tickets";
+import { ExportCsv, ExportPdf } from "@material-table/exporters";
+import  {fetchTicket, ticketUpdation } from "../api/tickets";
 import fetchUser,{userUpdation} from '../api/users';
 import { useEffect, useState } from "react";
 import Widget from "../components/widget";
 const columns = [
-  { title: "ID", field: "id" },
+  { title: "ID", field: "id" },  
   { title: "TITLE", field: "title" },
   { title: "DESCRIPTION", field: "description" },
   { title: "REPORTER", field: "reporter" },
@@ -37,7 +36,11 @@ const userColumns = [
     },
   },
 ];
+
+
+
 export default function Admin() {
+
   const [ticketDetails, setTicketDetails] = useState([]);
   const [ticketStatusCount, setTicketStatusCount] = useState({});
   const [ticketUpdationModal, setTicketUpdationModal] = useState(false);
@@ -45,7 +48,6 @@ export default function Admin() {
   const [userDetails, setUserDetails] = useState([]);
   const [selectedCurrUser, setSelectedCurrUser]= useState({})
   const [userUpdationModal, setUserUpdationModal] = useState(false);
-
   const updateSelectedCurrTicket = (data) => setSelectedCurrTicket(data);
   const closeTicketUpdationModal = () => setTicketUpdationModal(false);
   const updateSelectedCurrUser = (data) => setSelectedCurrUser(data);
@@ -164,105 +166,19 @@ export default function Admin() {
   const updateUser = (e) => {
     e.preventDefault();
     userUpdation(selectedCurrUser.userId, selectedCurrUser)
-      // .then((response)=>{
-      //   console.log("succeed",response)
-      .then(setUserUpdationModal(false), fetchUser())
-      // })
+      .then(setUserUpdationModal(false),
+      setInterval(() => {
+        fetchTickets()
+     }, 5000))
       .catch(function (error) {
         console.log(error);
       });
   };
   
   return (
-    <div className=" bg-opacity-0 vh-100%">
+    <div className=" vh-100% admin-bg">
       {/**SideBar */}
       <Sidebar />
-      
-{userUpdationModal && (
-      <Modal
-          show ={userUpdationModal}
-          backdrop="static"
-          onHide={closeUserUpdationModal}
-          
-          centered >
-            <Modal.Header closeButton>
-              <Modal.Title>Update User Details</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-            <form
-                /*submit the details and we  will call the API */
-                onSubmit={updateUser}
-              >
-                <div className="p-1">
-                  <h5 className="card-subtitle mb-2 text-danger">
-                    User ID: {selectedCurrUser.userId}
-                  </h5>
-                </div>
-                <div className="input-group mb-2">
-                  <label className="label input-group-text label-md">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    disabled
-                    value={selectedCurrUser.name}
-                    className="form-control"
-                  />
-                </div>
-                <div className="input-group mb-2">
-                  <label className="label input-group-text label-md">
-                    Email
-                  </label>
-                  <input
-                    type="text"
-                    disabled
-                    value={selectedCurrUser.email}
-                    className="form-control"
-                  />
-                </div>
-                {/* 3. -> grabbing the new updated values from inputs using onChange */}
-                <div className="input-group mb-2">
-                  <label className="label input-group-text label-md">
-                    User Type
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedCurrUser.userTypes}
-                    name="userTypes"
-                    className="form-control"
-                    onChange={onUserUpdate}
-                  />
-                </div>
-                <div className="input-group mb-2">
-                  <label className="label input-group-text label-md">
-                    User Status
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="userStatus"
-                    value={selectedCurrUser.userStatus}
-                    onChange={onUserUpdate}
-                  >
-                  </input>
-                </div>
-                
-                <div className="d-flex justify-content-end">
-                  <Button
-                    variant="secondary"
-                    className="m-1"
-                    onClick={closeUserUpdationModal}
-                  >
-                    Cancel
-                  </Button>
-                  <Button variant="danger" className="m-1" type="submit">
-                    Update
-                  </Button>
-                </div>
-              </form>
-            </Modal.Body>
-          </Modal>
-)}
       {/* Title-> Tether-X */}
       <div className=" d-inline-block fw-bold px-3 py-1 mx-5 my-1 rounded bg-secondary h5">
         TETHER-X
@@ -271,14 +187,13 @@ export default function Admin() {
       {/* Welcome Text */}
       <div className="mx-4 p-5">
         <div className="container">
-          <h3 className="text-center fw-bolder text-success">
+          <h2 className="text-center fw-bolder text-secondary">
             Welcome, {localStorage.getItem("name")}!
-          </h3>
-          <p className="text-muted text-center">
+          </h2>
+          <p className="lead text-center">
             Take a Quick Tour to your Admin Stats below!
           </p>
         </div>
-
         {/* Widgets */}
         <div className="row m-2">
         <Widget color = "primary" title = " Open" icon = "envelope-open" ticketCount={ticketStatusCount.open} totalCount={ticketStatusCount.total} />
@@ -398,7 +313,93 @@ export default function Admin() {
             </Modal.Body>
           </Modal>
         )}
-        <div className="container m-2">
+        {/* Modal - Users */}
+        {userUpdationModal && (
+              <Modal
+                  show ={userUpdationModal}
+                  backdrop="static"
+                  onHide={closeUserUpdationModal}
+                  
+                  centered >
+                    <Modal.Header closeButton>
+                      <Modal.Title>Update User Details</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                    <form
+                        /*submit the details and we  will call the API */
+                        onSubmit={updateUser}
+                      >
+                        <div className="p-1">
+                          <h5 className="card-subtitle mb-2 text-danger">
+                            User ID: {selectedCurrUser.userId}
+                          </h5>
+                        </div>
+                        <div className="input-group mb-2">
+                          <label className="label input-group-text label-md">
+                            Name
+                          </label>
+                          <input
+                            type="text"
+                            disabled
+                            value={selectedCurrUser.name}
+                            className="form-control"
+                          />
+                        </div>
+                        <div className="input-group mb-2">
+                          <label className="label input-group-text label-md">
+                            Email
+                          </label>
+                          <input
+                            type="text"
+                            disabled
+                            value={selectedCurrUser.email}
+                            className="form-control"
+                          />
+                        </div>
+                        {/* 3. -> grabbing the new updated values from inputs using onChange */}
+                        <div className="input-group mb-2">
+                          <label className="label input-group-text label-md">
+                            User Type
+                          </label>
+                          <input
+                            type="text"
+                            value={selectedCurrUser.userTypes}
+                            name="userTypes"
+                            className="form-control"
+                            onChange={onUserUpdate}
+                          />
+                        </div>
+                        <div className="input-group mb-2">
+                          <label className="label input-group-text label-md">
+                            User Status
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            name="userStatus"
+                            value={selectedCurrUser.userStatus}
+                            onChange={onUserUpdate}
+                          >
+                          </input>
+                        </div>
+                        
+                        <div className="d-flex justify-content-end">
+                          <Button
+                            variant="secondary"
+                            className="m-1"
+                            onClick={closeUserUpdationModal}
+                          >
+                            Cancel
+                          </Button>
+                          <Button variant="danger" className="m-1" type="submit">
+                            Update
+                          </Button>
+                        </div>
+                      </form>
+                    </Modal.Body>
+                  </Modal>
+        )}
+        <div className=" m-2">
           {/* Material-Table - Tickets */}
           <MaterialTable
             title="TICKETS"
@@ -429,8 +430,6 @@ export default function Admin() {
                   label: "Export Csv",
                   exportFunc: (cols, data) =>
                     ExportCsv(cols, data, "ticketRecords")
-                      .then((response) => console.log(response))
-                      .catch((error) => console.log(error)),
                 },
               ],
             }}
@@ -448,11 +447,11 @@ export default function Admin() {
                 backgroundColor: "#aaa",
                 color: "#fff",
               },
-              // rowStyle: (userDetails, index) => {
-              //   if (index % 2 === 0) {
-              //     return { backgroundColor: "#ddd" };
-              //   }
-              // },
+              rowStyle: (userDetails, index) => {
+                if (index % 2 === 0) {
+                  return { backgroundColor: "#ddd" };
+                }
+              },
               exportMenu: [
                 {
                   label: "Export Pdf",
@@ -463,8 +462,6 @@ export default function Admin() {
                   label: "Export Csv",
                   exportFunc: (cols, data) =>
                     ExportCsv(cols, data, "userRecords")
-                      .then((response) => console.log(response))
-                      .catch((error) => console.log(error)),
                 },
               ],
             }}
