@@ -106,7 +106,7 @@ function Customer() {
     window.location.href = "/"
 }
   return (
-    <div className="vh-100%">
+    <div className="vh-100% w-100">
       <Sidebar />
       {/* Title-> Tether-X */}
       <div className="d-flex justify-content-between align-items-center w-100">
@@ -117,8 +117,8 @@ function Customer() {
         </div>
       </div>
       {/* Welcome Text */}
-      <div className="mx-4 p-5">
-        <div className="container">
+      <div className="p-3 mx-md-4 p-md-5">
+        <div className="container mx-2">
           <h3 className="text-center fw-bolder text-primary">
             Welcome, {localStorage.getItem("name")}!
           </h3>
