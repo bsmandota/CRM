@@ -77,7 +77,7 @@ function Signin() {
   }
   return (
     <div className="vh-100 d-flex justify-content-center align-items-center login-home bg-opacity-50">
-      <div className="card m-4 p-4 rounded-4 shadow-lg bg-transparent">
+      <div className="card m-4 p-4 rounded-4 shadow bg-transparent">
         <h3 className="text-center text-primary bolder">
           {showSignup ? "Sign up" : "Sign in"}
         </h3>

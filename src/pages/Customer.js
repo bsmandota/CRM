@@ -101,11 +101,20 @@ function Customer() {
     // setSelectedCurrTicket(ticket);
   };
 
+  const logoutFn = ()=>{
+    localStorage.clear();
+    window.location.href = "/"
+}
   return (
     <div className="vh-100%">
       <Sidebar />
-      <div className=" d-inline-block fw-bold px-3 py-1 mx-5 my-1 rounded bg-secondary h5">
-        TETHER-X
+      {/* Title-> Tether-X */}
+      <div className="d-flex justify-content-between align-items-center w-100">
+        <div className="d-inline-block fw-bold px-3 py-1 mx-5 my-1 rounded bg-secondary h-3">
+          TETHER-X
+        </div>
+        <div onClick={logoutFn} className="d-inline-block fw-bold px-3 py-1 mx-5 my-1 rounded bg-secondary d-md-none h-3">log out
+        </div>
       </div>
       {/* Welcome Text */}
       <div className="mx-4 p-5">
@@ -117,9 +126,8 @@ function Customer() {
             Take a Quick Tour to your Raised Tickets below!
           </p>
         </div>
-
         {/* Widgets */}
-        <div className="row m-2">
+        <div className="row m-md-2">
           <Widget
             color="primary"
             title=" Open"
@@ -149,7 +157,7 @@ function Customer() {
             totalCount={ticketStatusCount.total}
           />
         </div>
-        <div className="container m-2">
+        <div className="p-3 mx-md-4 p-md-5">
           <MaterialTable
             title="TICKETS RAISED BY YOU"
             // 1. -> Grabbing the specific ticket from the row

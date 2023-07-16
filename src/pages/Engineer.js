@@ -108,10 +108,23 @@ const updateTicket = (e) => {
       console.log(error);
     });
 };
+
+const logoutFn = ()=>{
+  localStorage.clear();
+  window.location.href = "/"
+}
   return (
     <div className="vh-100% admin-bg">
       <Sidebar />
-      <div className="mx-4 p-5">
+      {/* Title-> Tether-X */}
+      <div className="d-flex justify-content-between align-items-center w-100 ">
+        <div className="d-inline-block fw-bold px-3 py-1 mx-5 my-1 rounded bg-secondary h5">
+          TETHER-X
+        </div>
+        <div onClick={logoutFn} className="d-inline-block fw-bold px-3 py-1 mx-5 my-1 rounded bg-secondary d-md-none h5">Log out
+        </div>
+      </div>
+      <div className="p-3 mx-md-4 p-md-5">
         <div className="container mx-2">
           <h2 className="text-center text-primary">Hello, {localStorage.getItem("name")}</h2>
           <p className="text-center lead text-muted">

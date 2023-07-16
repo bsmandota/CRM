@@ -175,17 +175,24 @@ export default function Admin() {
       });
   };
   
+  const logoutFn = ()=>{
+    localStorage.clear();
+    window.location.href = "/"
+}
   return (
-    <div className=" vh-100% admin-bg">
+    <div className=" vh-100% w-100 admin-bg">
       {/**SideBar */}
       <Sidebar />
       {/* Title-> Tether-X */}
-      <div className=" d-inline-block fw-bold px-3 py-1 mx-5 my-1 rounded bg-secondary h5">
-        TETHER-X
+      <div className="d-flex justify-content-between align-items-center w-100">
+        <div className="d-inline-block fw-bold px-3 py-1 mx-5 my-1 rounded bg-secondary h-3">
+          TETHER-X
+        </div>
+        <div onClick={logoutFn} className="d-inline-block fw-bold px-3 py-1 mx-5 my-1 rounded bg-secondary d-md-none h-3">log out
+        </div>
       </div>
-
       {/* Welcome Text */}
-      <div className="mx-4 p-5">
+      <div className="p-3 mx-md-4 p-md-5">
         <div className="container">
           <h2 className="text-center fw-bolder text-secondary">
             Welcome, {localStorage.getItem("name")}!
@@ -195,7 +202,7 @@ export default function Admin() {
           </p>
         </div>
         {/* Widgets */}
-        <div className="row m-2">
+        <div className="row m-md-2">
         <Widget color = "primary" title = " Open" icon = "envelope-open" ticketCount={ticketStatusCount.open} totalCount={ticketStatusCount.total} />
         <Widget color="warning" title=" Progress" icon="hourglass-split" ticketCount={ticketStatusCount.progress} totalCount={ticketStatusCount.total} />
         <Widget color="success" title=" Closed" icon="check2-square" ticketCount={ticketStatusCount.closed} totalCount={ticketStatusCount.total} />
@@ -399,7 +406,7 @@ export default function Admin() {
                     </Modal.Body>
                   </Modal>
         )}
-        <div className=" m-2">
+        <div className=" md-m-2">
           {/* Material-Table - Tickets */}
           <MaterialTable
             title="TICKETS"

@@ -6,6 +6,7 @@
 	background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    max-height:vh;
 }
 .admin-bg{
 	/* background-image:url("./components/adminbg.svg"); */

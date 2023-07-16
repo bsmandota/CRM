@@ -13,7 +13,7 @@ function Sidebar(){
             </CNavItem>
             <div>
                 <CNavItem className="d-flex hover-overlay">
-                <i className="bi bi-box-arrow-left text-white mx-3 my-2" style={{cursor:"pointer"}} onClick={logoutFn}></i>
+                <i className="bi bi-box-arrow-left text-white mx-3 my-2" style={{cursor:"pointer"}} ></i>
                     <h5 className="text-white fw-bolder mx-3 py-2 text-truncate" style={{cursor:"pointer"}} onClick={logoutFn}>Log out</h5>
                 </CNavItem>
                 
